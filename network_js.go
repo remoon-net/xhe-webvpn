@@ -52,11 +52,13 @@ func (net *Network) Listen(this js.Value, args []js.Value) (p any) {
 		ctx := signal2ctx(cfg.Get("signal"))
 		ctx, cancel := context.WithCancel(ctx)
 		addr := ap.Addr()
+		fa := tcpip.FullAddress{
+			NIC:  net.nic,
+			Port: ap.Port(),
+		}
 		if addr.Is6() {
-			fa := tcpip.FullAddress{
-				Addr: tcpip.AddrFrom16(addr.As16()),
-				NIC:  net.nic,
-				Port: ap.Port(),
+			if !addr.IsUnspecified() {
+				fa.Addr = tcpip.AddrFrom16(addr.As16())
 			}
 			l := try.To1(gonet.ListenTCP(net.stk, fa, ipv6.ProtocolNumber))
 			go func() {
@@ -66,10 +68,8 @@ func (net *Network) Listen(this js.Value, args []js.Value) (p any) {
 			go http.Serve(l, mux)
 		}
 		if addr.Is4() {
-			fa := tcpip.FullAddress{
-				Addr: tcpip.AddrFrom4(addr.As4()),
-				NIC:  net.nic,
-				Port: ap.Port(),
+			if !addr.IsUnspecified() {
+				fa.Addr = tcpip.AddrFrom4(addr.As4())
 			}
 			l := try.To1(gonet.ListenTCP(net.stk, fa, ipv4.ProtocolNumber))
 			go func() {
