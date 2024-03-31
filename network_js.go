@@ -35,7 +35,7 @@ type netListener = net.Listener
 func (net *Network) Listen(this js.Value, args []js.Value) (p any) {
 	p, resolve, reject := promise.New()
 	go func() (err error) {
-		err0.Then(&err, nil, func() {
+		defer err0.Then(&err, nil, func() {
 			reject(err.Error())
 		})
 		if len(args) != 2 {
