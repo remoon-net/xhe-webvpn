@@ -5,8 +5,10 @@ import (
 	"net"
 	"net/http"
 	"net/netip"
+	"strings"
 	"syscall/js"
 
+	"github.com/elazarl/goproxy"
 	promise "github.com/nlepage/go-js-promise"
 	"github.com/shynome/err0"
 	"github.com/shynome/err0/try"
@@ -27,6 +29,7 @@ type Network struct {
 func (net *Network) ToJS() js.Value {
 	root := js.Global().Get("Object").New()
 	root.Set("listen", js.FuncOf(net.Listen))
+	root.Set("http_proxy", js.FuncOf(net.HTTPProxy))
 	return root
 }
 
@@ -46,38 +49,12 @@ func (net *Network) Listen(this js.Value, args []js.Value) (p any) {
 			reject("addr is unknown")
 			return
 		}
-		ap := try.To1(netip.ParseAddrPort(args[0].String()))
-		cfg := args[1]
+		addr, cfg := args[0].String(), args[1]
 		mux := NewHono(cfg)
 		ctx := signal2ctx(cfg.Get("signal"))
 		ctx, cancel := context.WithCancel(ctx)
-		addr := ap.Addr()
-		fa := tcpip.FullAddress{
-			NIC:  net.nic,
-			Port: ap.Port(),
-		}
-		if addr.Is6() {
-			if !addr.IsUnspecified() {
-				fa.Addr = tcpip.AddrFrom16(addr.As16())
-			}
-			l := try.To1(gonet.ListenTCP(net.stk, fa, ipv6.ProtocolNumber))
-			go func() {
-				<-ctx.Done()
-				l.Close()
-			}()
-			go http.Serve(l, mux)
-		}
-		if addr.Is4() {
-			if !addr.IsUnspecified() {
-				fa.Addr = tcpip.AddrFrom4(addr.As4())
-			}
-			l := try.To1(gonet.ListenTCP(net.stk, fa, ipv4.ProtocolNumber))
-			go func() {
-				<-ctx.Done()
-				l.Close()
-			}()
-			go http.Serve(l, mux)
-		}
+
+		net.serveTry(ctx, addr, mux)
 
 		root := js.Global().Get("Object").New()
 		root.Set("close", js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -88,4 +65,90 @@ func (net *Network) Listen(this js.Value, args []js.Value) (p any) {
 		return nil
 	}()
 	return p
+}
+
+func (net *Network) serveTry(ctx context.Context, addrStr string, handler http.Handler) {
+	ap := try.To1(netip.ParseAddrPort(addrStr))
+	addr := ap.Addr()
+	fa := tcpip.FullAddress{
+		NIC:  net.nic,
+		Port: ap.Port(),
+	}
+	if addr.Is6() {
+		if !addr.IsUnspecified() {
+			fa.Addr = tcpip.AddrFrom16(addr.As16())
+		}
+		l := try.To1(gonet.ListenTCP(net.stk, fa, ipv6.ProtocolNumber))
+		go func() {
+			<-ctx.Done()
+			l.Close()
+		}()
+		go http.Serve(l, handler)
+	}
+	if addr.Is4() {
+		if !addr.IsUnspecified() {
+			fa.Addr = tcpip.AddrFrom4(addr.As4())
+		}
+		l := try.To1(gonet.ListenTCP(net.stk, fa, ipv4.ProtocolNumber))
+		go func() {
+			<-ctx.Done()
+			l.Close()
+		}()
+		go http.Serve(l, handler)
+	}
+}
+
+func (net *Network) HTTPProxy(this js.Value, args []js.Value) (p any) {
+	p, resolve, reject := promise.New()
+	go func() (err error) {
+		defer err0.Then(&err, nil, func() {
+			reject(err.Error())
+		})
+		if len(args) != 2 {
+			reject("rqeuire listen addr and empty config {}")
+			return
+		}
+		if args[0].Type() != js.TypeString {
+			reject("addr is unknown")
+			return
+		}
+		addr, cfg := args[0].String(), args[1]
+		proxy := goproxy.NewProxyHttpServer()
+		proxy.OnRequest().HandleConnectFunc(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
+			ctx.RoundTripper = goproxy.RoundTripperFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Response, error) {
+				return http.DefaultClient.Do(req)
+			})
+			return goproxy.MitmConnect, host
+		})
+		proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
+			injectJsFetchOptions(req)
+			return req, nil
+		})
+		ctx := signal2ctx(cfg.Get("signal"))
+		ctx, cancel := context.WithCancel(ctx)
+
+		net.serveTry(ctx, addr, proxy)
+
+		root := js.Global().Get("Object").New()
+		root.Set("close", js.FuncOf(func(this js.Value, args []js.Value) any {
+			cancel()
+			return js.Undefined()
+		}))
+		resolve(root)
+		return nil
+	}()
+	return p
+}
+
+const jsFetchOptInPrefix = "Js.fetch."
+const jsFetchOptPrefix = "js.fetch:"
+
+func injectJsFetchOptions(r *http.Request) {
+	for k, vv := range r.Header {
+		if strings.HasPrefix(k, jsFetchOptInPrefix) {
+			r.Header.Del(k)
+			k = jsFetchOptPrefix + k[len(jsFetchOptInPrefix):]
+			r.Header[k] = vv
+		}
+	}
 }

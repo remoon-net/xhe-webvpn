@@ -25,3 +25,5 @@ const srv = await net.listen("0.0.0.0:80", {
     return new Response("ok");
   },
 });
+
+await net.http_proxy("0.0.0.0:1080", {});

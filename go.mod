@@ -6,6 +6,7 @@ replace remoon.net/xhe-vpn => ../xhe-vpn
 
 require (
 	github.com/chromedp/chromedp v0.9.5
+	github.com/elazarl/goproxy v0.0.0-20231117061959-7cc037d33fb5
 	github.com/nlepage/go-js-promise v1.1.0
 	github.com/shynome/err0 v0.1.0
 	github.com/shynome/hack-gojs v0.0.1

@@ -21,10 +21,15 @@ export interface Peer {
 
 interface Network {
   listen(addr: string, handler: Handler): Promise<Server>;
+  http_proxy(addr: string, handler: HTTPProxyHandler): Promise<Server>;
 }
 
 interface Handler {
   fetch: (req: Request) => Response;
+  signal?: AbortSignal;
+}
+
+interface HTTPProxyHandler {
   signal?: AbortSignal;
 }
 
