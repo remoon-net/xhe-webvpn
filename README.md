@@ -10,7 +10,7 @@
 
 ## 配置服务端
 
-注: 由于尚未完全开源, 建议用户在虚拟机中测试
+注: 由于尚未完全开源, 建议在虚拟机中测试
 
 ```sh
 git clone https://github.com/remoon-net/xhe-webvpn.git xhe-webvpn
@@ -60,6 +60,7 @@ void (async function main() {
       return new Response("ok");
     },
   });
+  await net.listen("0.0.0.0:1080", {});
 })();
 ```
 
@@ -70,4 +71,8 @@ void (async function main() {
 ```sh
 curl http://192.168.4.28:80
 # 应该输出 ok
+# -------
+# http proxy 代理模式
+# -k 忽略证书错误
+curl -k -x http://192.168.4.28:1080 https://remoon.net/
 ```
