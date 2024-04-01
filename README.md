@@ -34,7 +34,7 @@ sudo ./xhe-vpn
 // @match       https://remoon.net/
 // @version     0.0.1
 // @author      -
-// @require     https://unpkg.com/@remoon.net/xhe-vpn@0.0.2/dist/xhe-vpn.umd.js
+// @require     https://unpkg.com/@remoon.net/xhe-vpn@0.0.3/dist/xhe-vpn.umd.js
 // @run-at      document-start
 // @description 01/04/2024, 00:00:00
 // @grant       none
@@ -60,7 +60,7 @@ void (async function main() {
       return new Response("ok");
     },
   });
-  await net.listen("0.0.0.0:1080", {});
+  await net.http_proxy("0.0.0.0:1080", {});
 })();
 ```
 
