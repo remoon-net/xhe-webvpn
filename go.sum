@@ -300,5 +300,5 @@ gvisor.dev/gvisor v0.0.0-20230927004350-cbd86285d259 h1:TbRPT0HtzFP3Cno1zZo7yPzE
 gvisor.dev/gvisor v0.0.0-20230927004350-cbd86285d259/go.mod h1:AVgIgHMwK63XvmAzWG9vLQ41YnVHN0du0tEC46fI7yY=
 nhooyr.io/websocket v1.8.10 h1:mv4p+MnGrLDcPlBoWsvPP7XCzTYMXP9F9eIGoKbgx7Q=
 nhooyr.io/websocket v1.8.10/go.mod h1:rN9OFWIUwuxg4fR5tELlYC04bXYowCP9GX47ivo2l+c=
-remoon.net/wslink v0.2.0 h1:U9SlY+GI+QctmOVIzxYJWqBz5JrbSqWFVL+i6GFBcj4=
-remoon.net/wslink v0.2.0/go.mod h1:ipB69S+BpsGs7DzbNA2NMylQ3C8J/h4zUHe1RfxmE8k=
+remoon.net/wslink v0.2.1 h1:W72Ju/xXGJKjLbsEc69MaKxgeXPyb1ZtfAln8g9b3aI=
+remoon.net/wslink v0.2.1/go.mod h1:JSKRczxnaKCE7/49dyiTCb8hXHSLVWZe/EihNs4hVS4=
