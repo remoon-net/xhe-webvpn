@@ -20,7 +20,7 @@ export interface Peer {
 }
 
 interface Network {
-  listen(port: string, handler: Handler): Promise<Server>;
+  listen(addr: string, handler: Handler): Promise<Server>;
 }
 
 interface Handler {
