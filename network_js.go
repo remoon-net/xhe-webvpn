@@ -2,13 +2,16 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"net"
 	"net/http"
 	"net/netip"
 	"strings"
 	"syscall/js"
 
+	"github.com/docker/go-units"
 	"github.com/elazarl/goproxy"
+	"github.com/maypok86/otter"
 	promise "github.com/nlepage/go-js-promise"
 	"github.com/shynome/err0"
 	"github.com/shynome/err0/try"
@@ -114,11 +117,30 @@ func (net *Network) HTTPProxy(this js.Value, args []js.Value) (p any) {
 		}
 		addr, cfg := args[0].String(), args[1]
 		proxy := goproxy.NewProxyHttpServer()
+
+		cache, err := otter.MustBuilder[string, *tls.Config](1 * units.GiB).Build()
+		try.To(err)
+
+		MitmConnectWithCache := &goproxy.ConnectAction{
+			Action: goproxy.ConnectMitm,
+			TLSConfig: func(host string, ctx *goproxy.ProxyCtx) (*tls.Config, error) {
+				cfg, ok := cache.Get(host)
+				if ok {
+					return cfg, nil
+				}
+				cfg, err := goproxy.MitmConnect.TLSConfig(host, ctx)
+				if err != nil {
+					return nil, err
+				}
+				cache.Set(host, cfg)
+				return cfg, err
+			},
+		}
 		proxy.OnRequest().HandleConnectFunc(func(host string, ctx *goproxy.ProxyCtx) (*goproxy.ConnectAction, string) {
 			ctx.RoundTripper = goproxy.RoundTripperFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Response, error) {
 				return http.DefaultClient.Do(req)
 			})
-			return goproxy.MitmConnect, host
+			return MitmConnectWithCache, host
 		})
 		proxy.OnRequest().DoFunc(func(req *http.Request, ctx *goproxy.ProxyCtx) (*http.Request, *http.Response) {
 			injectJsFetchOptions(req)
