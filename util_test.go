@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/netip"
+	"os"
 	"os/exec"
 
 	"github.com/shynome/err0/try"
@@ -11,7 +12,9 @@ import (
 )
 
 func buildTry() {
-	err := exec.Command("npm", "run", "build").Run()
+	cmd := exec.Command("npm", "run", "build")
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
 	try.To(err)
 }
 
