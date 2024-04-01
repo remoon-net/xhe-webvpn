@@ -19,7 +19,21 @@
     "test": "go test .",
     "prepublishOnly": "npm test"
   },
-  "keywords": [],
+  "files": [
+    "/dist",
+    "/go_wasm_js/wasm_exec_node.js",
+    "/go_wasm_js/wasm_exec.js",
+    "/index.d.ts",
+    "/index.mjs",
+    "/wrtc-polyfill.js"
+  ],
+  "keywords": [
+    "vpn",
+    "wiregaurd",
+    "WireGuard",
+    "xhe-vpn",
+    "webrtc"
+  ],
   "author": "",
   "license": "AGPL3.0",
   "devDependencies": {
