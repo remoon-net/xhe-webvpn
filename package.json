@@ -25,7 +25,8 @@
     "/go_wasm_js/wasm_exec.js",
     "/index.d.ts",
     "/index.mjs",
-    "/wrtc-polyfill.js"
+    "/wrtc-polyfill.js",
+    "/xhe-vpn.wasm"
   ],
   "keywords": [
     "vpn",
