@@ -16,7 +16,7 @@
   "scripts": {
     "build": "make wasm && vite build",
     "pretest": "npm run build",
-    "test": "go test .",
+    "test": "go test -v -count=1 .",
     "prepublishOnly": "npm test"
   },
   "files": [
