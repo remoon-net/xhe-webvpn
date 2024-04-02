@@ -10,7 +10,7 @@
 
 ## 配置服务端
 
-注: 由于尚未完全开源, 建议在虚拟机中测试
+注: 由于尚未完全开源, 建议在虚拟机中测试(要是俺有钱现在就全部开源了, 可点击[底部捐赠](#捐赠)助力开源)
 
 ```sh
 git clone https://github.com/remoon-net/xhe-webvpn.git xhe-webvpn
@@ -32,7 +32,8 @@ sudo ./xhe-vpn
 // @name        vpn - Xhe Vpn
 // @namespace   xhe-vpn.remoon.net
 // @match       https://remoon.net/
-// @version     0.0.1
+// @version     0.0.1![Uploading B站直播收益导出按钮.png…]()
+
 // @author      -
 // @require     https://unpkg.com/@remoon.net/xhe-vpn@0.0.4/dist/xhe-vpn.umd.js
 // @run-at      document-start
@@ -76,3 +77,14 @@ curl http://192.168.4.28:80
 # -k 忽略证书错误
 curl -k -x http://192.168.4.28:1080 https://remoon.net/
 ```
+
+## 捐赠
+
+虽然开源是我想做的, 但终归要吃饭的嘛, 所以请谅解一下这个项目只部分开源的行为 (如果不用为生计发愁就完全开源了, 更多人参与bug也修得更快)
+
+如果有能力的话可以捐赠一些, 帮助此项目发展
+
+| 支付宝 | 微信|
+| ---|---|
+| <img height="400" src="https://github.com/remoon-net/xhe-webvpn/assets/17316043/ca03867b-7bce-420a-8453-ce09fcef8cd7" alt="支付宝两碗拌粉" /> | <img height="400" src="https://github.com/remoon-net/xhe-webvpn/assets/17316043/21e5a561-c53b-4a15-8834-e4122c0dfbbe" alt="微信两碗拌粉" /> |
+
