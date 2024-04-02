@@ -36,7 +36,7 @@ sudo ./xhe-vpn
 // @name        vpn - Xhe Vpn
 // @namespace   xhe-vpn.remoon.net
 // @match       https://remoon.net/
-// @version     0.0.1![Uploading B站直播收益导出按钮.png…]()
+// @version     0.0.1
 
 // @author      -
 // @require     https://unpkg.com/@remoon.net/xhe-vpn@0.0.4/dist/xhe-vpn.umd.js
