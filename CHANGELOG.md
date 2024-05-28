@@ -1,6 +1,10 @@
 # Changelog
 
-## [0.0.5] - 2024-04-29
+## [0.0.6] - 2024-05-29
+
+- 更新 `config.ICE` 的类型, 由 `{[tag:string]: []string}` 更正为 `[]string`, 新类型修改起来更方便
+
+## [0.0.5] - 2024-05-29
 
 - 修复 `config.ICE` 的类型错误, 由 `[]string` 更正为 `{[tag:string]: []string}`
 

@@ -4,7 +4,7 @@ export interface Config {
   // Port: number;
   Tun?: string;
   Route?: string[];
-  ICE?: { [tag: string]: string[] };
+  ICE?: string[];
   Peer?: Peer[];
   signal?: AbortSignal;
   WASM?: string;
