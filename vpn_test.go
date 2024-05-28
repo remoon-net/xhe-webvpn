@@ -45,7 +45,7 @@ func TestReqBrowserAtServer(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cfg := &config.Config{
+	cfg := config.Config{
 		Key:   "003ed5d73b55806c30de3f8a7bdab38af13539220533055e635690b8b87ad641",
 		Link:  []string{"http://127.0.0.1:2233"},
 		VTun:  true,
@@ -73,7 +73,7 @@ func TestReqBrowserAtClient(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	cfg := &config.Config{
+	cfg := config.Config{
 		Key:   "003ed5d73b55806c30de3f8a7bdab38af13539220533055e635690b8b87ad641",
 		Link:  []string{"http://127.0.0.1:2233"},
 		VTun:  true,
@@ -109,7 +109,7 @@ func openTry(ctx context.Context, link string) {
 	try.To(chromedp.Run(ctx, tasks...))
 }
 
-func startSrv(ctx context.Context, cfg *config.Config) *http.Client {
+func startSrv(ctx context.Context, cfg config.Config) *http.Client {
 	_, tdev := try.To2(vpn.Connect(ctx, cfg))
 	tun := tdev.(vtun.GetStack)
 	stk, nic := tun.GetStack(), tun.NIC()
