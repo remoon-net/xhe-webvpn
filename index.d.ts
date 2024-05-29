@@ -11,6 +11,7 @@ export interface Config {
 }
 
 export interface Peer {
+  Name?: string;
   Pubkey: string;
   PSK?: string;
   Allow?: string[];
