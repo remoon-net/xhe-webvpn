@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.7] - 2024-05-30
+
+- Peer 添加 Name 字段用于备注节点
+
 ## [0.0.6] - 2024-05-29
 
 - 更新 `config.ICE` 的类型, 由 `{[tag:string]: []string}` 更正为 `[]string`, 新类型修改起来更方便
