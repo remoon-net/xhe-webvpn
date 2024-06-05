@@ -29,7 +29,7 @@ func main() {
 		dev, tdev := try.To2(vpn.Connect(ctx, config))
 		tun := tdev.(vtun.GetStack)
 		stk, nic := tun.GetStack(), tun.NIC()
-		net := &Network{stk: stk, nic: nic, dev: dev}
+		net := &Network{stk: stk, nic: nic, dev: dev.Device}
 		resolve(net.ToJS())
 		return
 	}()
